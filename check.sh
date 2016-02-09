@@ -229,13 +229,13 @@ link=$(echo http://atomisystems.com/apdownloads/latest/ActivePresenter_setup.exe
 wget -S --spider -o $tmp/output.log $link
 
 #start basic check if the page even have the right content
-grep "http.*ActivePresenter.*exe" $tmp/output.log > /dev/null
+grep -A99 "^Resolving" $tmp/output.log | grep "http.*ActivePresenter.*exe" > /dev/null
 if [ $? -eq 0 ]; then
 
 #take the first link which starts with http and ends with exe
-url=$(sed "s/http/\nhttp/g" $tmp/output.log | \
+url=$(grep -A99 "^Resolving" $tmp/output.log | \
+sed "s/http/\nhttp/g" | \
 sed "s/exe/exe\n/g" | \
-grep -v "latest" | \
 grep "^http.*exe$" | head -1)
 
 #calculate exact filename of link
