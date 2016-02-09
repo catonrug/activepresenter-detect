@@ -235,6 +235,7 @@ if [ $? -eq 0 ]; then
 #take the first link which starts with http and ends with exe
 url=$(sed "s/http/\nhttp/g" $tmp/output.log | \
 sed "s/exe/exe\n/g" | \
+grep -v "latest" | \
 grep "^http.*exe$" | head -1)
 
 #calculate exact filename of link
@@ -260,6 +261,8 @@ echo
 
 #detect exact verison of ActivePresenter
 version=$(pestr $tmp/$filename | grep -m1 -A1 "ProductVersion" | grep -v "ProductVersion")
+echo $version
+echo
 
 echo "$filename">> $db
 echo "$md5">> $db
@@ -278,7 +281,7 @@ fi
 emails=$(cat ../posting | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "PDFCreator $version" "$url 
+python ../send-email.py "$onemail" "ActivePresenter $version" "$url 
 $md5
 $sha1"
 } done
@@ -287,7 +290,7 @@ fi
 
 else
 
-#if output.log do not contains any 'PDFCreator' filenames wich ends with exe 
+#if output.log do not contains any 'ActivePresenter' filenames wich ends with exe 
 #lets send emails to all people in "maintenance" file
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
