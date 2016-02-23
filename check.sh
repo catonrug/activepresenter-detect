@@ -254,14 +254,6 @@ echo Downloading $filename
 wget $url -O $tmp/$filename -q
 echo
 
-echo creating sha1 checksum of file..
-sha1=$(sha1sum $tmp/$filename | sed "s/\s.*//g")
-echo
-
-echo creating md5 checksum of file..
-md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
-echo
-
 #detect exact verison of ActivePresenter
 version=$(pestr $tmp/$filename | grep -m1 -A1 "ProductVersion" | grep -v "ProductVersion")
 echo $version | grep "[0-9\.]\+"
@@ -281,6 +273,14 @@ if [ $lines -gt 0 ]; then
 echo change log found:
 echo
 cat $tmp/change.log
+echo
+
+echo creating sha1 checksum of file..
+sha1=$(sha1sum $tmp/$filename | sed "s/\s.*//g")
+echo
+
+echo creating md5 checksum of file..
+md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
 echo
 
 echo "$filename">> $db
@@ -307,7 +307,6 @@ $md5
 $sha1"
 } done
 echo
-fi
 
 else
 #changes.log file has created but changes is mission
