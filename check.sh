@@ -236,10 +236,7 @@ grep -A99 "^Resolving" $tmp/output.log | grep "http.*ActivePresenter.*exe" > /de
 if [ $? -eq 0 ]; then
 
 #take the first link which starts with http and ends with exe
-url=$(grep -A99 "^Resolving" $tmp/output.log | \
-sed "s/http/\nhttp/g" | \
-sed "s/exe/exe\n/g" | \
-grep "^http.*exe$" | head -1)
+url=$(grep -A99 "^Resolving" $tmp/output.log | sed "s/http/\nhttp/g" | sed "s/exe/exe\n/g" | grep "^http.*exe$" | head -1)
 
 #calculate exact filename of link
 filename=$(echo $url | sed "s/^.*\///g")
@@ -261,9 +258,14 @@ if [ $? -eq 0 ]; then
 echo
 
 versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
+echo $versioncheck
 
 echo looking for change log..
 wget -qO- "$changes" | grep -A99 -m1 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
+
+echo change log is:
+cat $tmp/change.log
+echo
 
 #check if even something has been created
 if [ -f $tmp/change.log ]; then
