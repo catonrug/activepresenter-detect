@@ -258,7 +258,7 @@ if [ $? -eq 0 ]; then
 echo
 
 versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
-echo version: $versioncheck
+echo version: $versioncheck viena atstarpe
 echo changes: "$changes"
 
 echo looking for change log..
