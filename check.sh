@@ -263,8 +263,8 @@ echo changes: "$changes"
 
 echo looking for change log..
 wget -qO- "$changes" | grep "$version"
-wget -qO- "$changes" | grep -A99 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed ";s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
-wget -qO- "$changes" | grep -A99 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed ";s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
+wget -qO- "$changes" | grep -A99 "$version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed ";s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
+wget -qO- "$changes" | grep -A99 "$version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed ";s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
 echo change log is:
 cat $tmp/change.log
