@@ -313,7 +313,9 @@ printf %s "$emails" | while IFS= read -r onemail
 do {
 python ../send-email.py "$onemail" "ActivePresenter $version" "$url 
 $md5
-$sha1"
+$sha1
+
+`cat $tmp/change.log`"
 } done
 echo
 
