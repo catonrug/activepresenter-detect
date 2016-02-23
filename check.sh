@@ -260,8 +260,10 @@ echo $version | grep "[0-9\.]\+"
 if [ $? -eq 0 ]; then
 echo
 
+versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
+
 echo looking for change log..
-wget -qO- "$changes" | grep -A99 -m1 "ActivePresenter $version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
+wget -qO- "$changes" | grep -A99 -m1 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
 #check if even something has been created
 if [ -f $tmp/change.log ]; then
