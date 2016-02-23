@@ -262,7 +262,7 @@ echo version: $versioncheck viena atstarpe
 echo changes: "$changes"
 
 echo looking for change log..
-wget -qO- "$changes" | grep -A99 -m1 "<body>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g;s/[ \t]*$//"
+wget -qO- "$changes" | grep -A99 -m1 "<body>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g;s/[ \t]*$//" | grep -A99 -m1 '`echo $versioncheck`'
 wget -qO- "$changes" | grep -A99 "$version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
 wget -qO- "$changes" | grep -A99 "$version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
