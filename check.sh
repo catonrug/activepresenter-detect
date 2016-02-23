@@ -264,8 +264,6 @@ echo changes: "$changes"
 wget -qO- "$changes" | grep -A999 "<body>" > $tmp/releasenotes.log
 
 echo looking for change log..
-
-grep -B99 -m3 "<\/div>" $tmp/releasenotes.log | grep -A99 $version | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
 grep -B99 -m3 "<\/div>" $tmp/releasenotes.log | grep -A99 $version | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
 echo change log is:
