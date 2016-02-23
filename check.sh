@@ -224,6 +224,9 @@ fi
 #this link provides latest version
 link=$(echo http://atomisystems.com/apdownloads/latest/ActivePresenter_setup.exe)
 
+#set change log
+changes=$(echo "http://atomisystems.com/updates/ActivePresenter/v5/releasenotes_v5.html")
+
 #use spider mode to output all information abaout request
 #do not download anything
 wget -S --spider -o $tmp/output.log $link
@@ -261,12 +264,29 @@ echo
 
 #detect exact verison of ActivePresenter
 version=$(pestr $tmp/$filename | grep -m1 -A1 "ProductVersion" | grep -v "ProductVersion")
-echo $version
+echo $version | grep "[0-9\.]\+"
+if [ $? -eq 0 ]; then
+echo
+
+echo looking for change log..
+wget -qO- "$changes" | grep -A99 -m1 "ActivePresenter $version" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
+
+#check if even something has been created
+if [ -f $tmp/change.log ]; then
+
+#calculate how many lines log file contains
+lines=$(cat $tmp/change.log | wc -l)
+if [ $lines -gt 0 ]; then
+echo change log found:
+echo
+cat $tmp/change.log
 echo
 
 echo "$filename">> $db
+echo "$version">> $db
 echo "$md5">> $db
 echo "$sha1">> $db
+echo >> $db
 
 #if google drive config exists then upload and delete file:
 if [ -f "../gd/$appname.cfg" ]
@@ -289,7 +309,41 @@ echo
 fi
 
 else
+#changes.log file has created but changes is mission
+echo changes.log file has created but changes is mission
+emails=$(cat ../maintenance | sed '$aend of file')
+printf %s "$emails" | while IFS= read -r onemail
+do {
+python ../send-email.py "$onemail" "To Do List" "changes.log file has created but changes is mission: 
+$version 
+$changes "
+} done
+fi
 
+else
+#changes.log has not been created
+echo changes.log has not been created
+emails=$(cat ../maintenance | sed '$aend of file')
+printf %s "$emails" | while IFS= read -r onemail
+do {
+python ../send-email.py "$onemail" "To Do List" "changes.log has not been created: 
+$version 
+$changes "
+} done
+fi
+
+else
+#version do not match version pattern
+echo version do not match version pattern
+emails=$(cat ../maintenance | sed '$aend of file')
+printf %s "$emails" | while IFS= read -r onemail
+do {
+python ../send-email.py "$onemail" "To Do List" "Version do not match version pattern: 
+$link "
+} done
+fi
+
+else
 #if output.log do not contains any 'ActivePresenter' filenames wich ends with exe 
 #lets send emails to all people in "maintenance" file
 emails=$(cat ../maintenance | sed '$aend of file')
