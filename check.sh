@@ -258,7 +258,8 @@ if [ $? -eq 0 ]; then
 echo
 
 versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
-echo $versioncheck
+echo version: $versioncheck
+echo changes: "$changes"
 
 echo looking for change log..
 wget -qO- "$changes" | grep -A99 -m1 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
