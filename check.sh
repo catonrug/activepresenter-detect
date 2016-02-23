@@ -261,6 +261,7 @@ versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
 echo $versioncheck
 
 echo looking for change log..
+wget -qO- "$changes" | grep -A99 -m1 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
 wget -qO- "$changes" | grep -A99 -m1 "$versioncheck" | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g;s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
 echo change log is:
@@ -362,4 +363,4 @@ $link"
 fi
 
 #clean and remove whole temp direcotry
-rm $tmp -rf > /dev/null
+#rm $tmp -rf > /dev/null
