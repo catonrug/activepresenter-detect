@@ -273,6 +273,7 @@ wget -qO- "$changes" | grep -A99 -m1 "ActivePresenter $version" | grep -B99 -m2 
 
 #check if even something has been created
 if [ -f $tmp/change.log ]; then
+echo
 
 #calculate how many lines log file contains
 lines=$(cat $tmp/change.log | wc -l)
@@ -344,15 +345,17 @@ $link "
 fi
 
 else
-#if output.log do not contains any 'ActivePresenter' filenames wich ends with exe 
-#lets send emails to all people in "maintenance" file
+echo $filename already in database
+fi
+
+else
+#exe file not found
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
 python ../send-email.py "$onemail" "To Do List" "The following link do not longer retreive installer: 
 $link"
 } done
-
 fi
 
 #clean and remove whole temp direcotry
