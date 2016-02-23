@@ -261,12 +261,12 @@ versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
 echo version: $versioncheck viena atstarpe
 echo changes: "$changes"
 
-curl "$changes" > $tmp/releasenotes.log
+wget -qO- "$changes" | grep -A999 "<body>" > $tmp/releasenotes.log
 
 echo looking for change log..
 
-grep -A99 "$versioncheck" $tmp/releasenotes.log | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
-grep -A99 "$versioncheck" $tmp/releasenotes.log | grep -B99 -m2 "ActivePresenter" | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
+grep -B99 -m3 "<\/div>" $tmp/releasenotes.log | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /"
+grep -B99 -m3 "<\/div>" $tmp/releasenotes.log | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
 
 echo change log is:
 cat $tmp/change.log
