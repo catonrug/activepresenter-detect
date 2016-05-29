@@ -64,7 +64,7 @@ fi
 link=$(echo http://atomisystems.com/apdownloads/latest/ActivePresenter_setup.exe)
 
 #set change log
-changes=$(echo "http://atomisystems.com/updates/ActivePresenter/v5/releasenotes_v5.html")
+changes=$(echo "http://atomisystems.com/updates/ActivePresenter/v6/releasenotes_v6.html")
 
 #use spider mode to output all information abaout request
 #do not download anything
