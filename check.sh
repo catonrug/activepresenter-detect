@@ -97,7 +97,7 @@ if [ $? -eq 0 ]; then
 echo
 
 versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
-echo version: $versioncheck viena atstarpe
+echo version: $versioncheck
 echo changes: "$changes"
 
 wget -qO- "$changes" | grep -A999 "<body>" > $tmp/releasenotes.log
@@ -162,7 +162,7 @@ echo changes.log file has created but changes is mission
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "To Do List" "changes.log file has created but changes is mission: 
+python ../send-email.py "$onemail" "ActivePresenter" "changes.log file has created but changes is mission: 
 $version 
 $changes "
 } done
@@ -174,7 +174,7 @@ echo changes.log has not been created
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "To Do List" "changes.log has not been created: 
+python ../send-email.py "$onemail" "ActivePresenter" "changes.log has not been created: 
 $version 
 $changes "
 } done
@@ -186,7 +186,7 @@ echo version do not match version pattern
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "To Do List" "Version do not match version pattern: 
+python ../send-email.py "$onemail" "ActivePresenter" "Version do not match version pattern: 
 $link "
 } done
 fi
@@ -200,7 +200,7 @@ else
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "To Do List" "The following link do not longer retreive installer: 
+python ../send-email.py "$onemail" "ActivePresenter" "The following link do not longer retreive installer: 
 $link"
 } done
 fi
