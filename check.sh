@@ -61,21 +61,19 @@ echo google upload will not be used cause ~/uploader_credentials.txt do not exis
 fi
 
 #this link provides latest version
-link=$(echo http://atomisystems.com/apdownloads/latest/ActivePresenter_setup.exe)
-
-#set change log
-changes=$(echo "http://atomisystems.com/updates/ActivePresenter/v6/releasenotes_v6.html")
+link=$(echo "https://atomisystems.com/download/")
 
 #use spider mode to output all information abaout request
 #do not download anything
 wget -S --spider -o $tmp/output.log $link
 
-#start basic check if the page even have the right content
-grep -A99 "^Resolving" $tmp/output.log | grep "http.*ActivePresenter.*exe" > /dev/null
+#check if the whole page is even working. basic stuff
+grep -A99 "^Resolving" $tmp/output.log | grep "HTTP.*200 OK"
 if [ $? -eq 0 ]; then
+echo
 
 #take the first link which starts with http and ends with exe
-url=$(grep -A99 "^Resolving" $tmp/output.log | sed "s/http/\nhttp/g" | sed "s/exe/exe\n/g" | grep "^http.*exe$" | head -1)
+url=$(wget -qO- "$link" | sed "s/\d034/\n/g" | grep -m1 "^http.*exe$")
 
 #calculate exact filename of link
 filename=$(echo $url | sed "s/^.*\///g")
@@ -96,31 +94,6 @@ echo $version | grep "[0-9\.]\+"
 if [ $? -eq 0 ]; then
 echo
 
-versioncheck=$(echo "$version" | sed "s/^/ActivePresenter /")
-echo version: $versioncheck
-echo changes: "$changes"
-
-wget -qO- "$changes" | grep -A999 "<body>" > $tmp/releasenotes.log
-
-echo looking for change log..
-grep -B99 -m3 "<\/div>" $tmp/releasenotes.log | grep -A99 $version | grep -v "<\/h2>" | sed -e "s/<[^>]*>//g" | sed "s/^[ \t]*//g" | grep "[a-zA-Z]" | sed -e "/:/! s/^/- /" > $tmp/change.log
-
-echo change log is:
-cat $tmp/change.log
-echo
-
-#check if even something has been created
-if [ -f $tmp/change.log ]; then
-echo
-
-#calculate how many lines log file contains
-lines=$(cat $tmp/change.log | wc -l)
-if [ $lines -gt 0 ]; then
-echo change log found:
-echo
-cat $tmp/change.log
-echo
-
 echo creating sha1 checksum of file..
 sha1=$(sha1sum $tmp/$filename | sed "s/\s.*//g")
 echo
@@ -129,6 +102,13 @@ echo creating md5 checksum of file..
 md5=$(md5sum $tmp/$filename | sed "s/\s.*//g")
 echo
 
+echo "$url"
+echo "$filename"
+echo "$version"
+echo "$md5"
+echo "$sha1"
+
+echo "$url">> $db
 echo "$filename">> $db
 echo "$version">> $db
 echo "$md5">> $db
@@ -152,33 +132,10 @@ python ../send-email.py "$onemail" "ActivePresenter $version" "$url
 $md5
 $sha1
 
-`cat $tmp/change.log`"
+https://drive.google.com/drive/folders/0B_3uBwg3RcdVUzBmR21zM082R3M/ 
+"
 } done
 echo
-
-else
-#changes.log file has created but changes is mission
-echo changes.log file has created but changes is mission
-emails=$(cat ../maintenance | sed '$aend of file')
-printf %s "$emails" | while IFS= read -r onemail
-do {
-python ../send-email.py "$onemail" "ActivePresenter" "changes.log file has created but changes is mission: 
-$version 
-$changes "
-} done
-fi
-
-else
-#changes.log has not been created
-echo changes.log has not been created
-emails=$(cat ../maintenance | sed '$aend of file')
-printf %s "$emails" | while IFS= read -r onemail
-do {
-python ../send-email.py "$onemail" "ActivePresenter" "changes.log has not been created: 
-$version 
-$changes "
-} done
-fi
 
 else
 #version do not match version pattern
@@ -200,7 +157,7 @@ else
 emails=$(cat ../maintenance | sed '$aend of file')
 printf %s "$emails" | while IFS= read -r onemail
 do {
-python ../send-email.py "$onemail" "ActivePresenter" "The following link do not longer retreive installer: 
+python ../send-email.py "$onemail" "ActivePresenter" "The following link do not longer retreive good status code: 
 $link"
 } done
 fi
